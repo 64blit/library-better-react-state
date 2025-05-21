@@ -1,0 +1,115 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+- **Apply Consistent Feature Organization**
+  - Group related state and actions into feature slices
+  - Maintain consistent naming conventions across features
+  - Organize files by domain rather than technical function
+  ```typescript
+  // ✅ DO: Organize by feature domain
+  // src/core/createFeatureStore.ts
+  // src/persistence/localStorageAdapter.ts
+  // src/sync/websocketSync.ts
+  
+  // ❌ DON'T: Mix concerns within modules
+  // src/utils/miscUtils.ts (contains unrelated utilities)
+  ```
+
+- **Implement Progressive Enhancement**
+  - Start with core functionality, then add optional features
+  - Make advanced features opt-in through configuration
+  - Use middleware pattern for extensibility
+  ```typescript
+  // ✅ DO: Make features optional and configurable
+  interface StoreOptions {
+    devtools?: boolean;
+    persistence?: PersistenceOptions;
+    sync?: SyncOptions;
+  }
+  
+  // ❌ DON'T: Force all features on users
+  // Always enabling features like persistence without configuration
+  ```
+
+- **Create Specialized Utility Classes**
+  - Build focused utility classes with clear responsibilities
+  - Use static methods for stateless utilities
+  - Provide comprehensive documentation
+  ```typescript
+  // ✅ DO: Create specialized utilities
+  export class PerformanceMonitor {
+    static start(label: string): void {
+      // Implementation
+    }
+    
+    static end(label: string): void {
+      // Implementation
+    }
+  }
+  
+  // ❌ DON'T: Create generic utility buckets
+  // A single utils.ts with mixed responsibilities
+  ```
+
+- **Implement Proper Initialization Tracking**
+  - Track initialization state for async features
+  - Provide loading/error state access
+  - Handle initialization failures gracefully
+  ```typescript
+  // ✅ DO: Track initialization properly
+  interface InitializationState {
+    isInitialized: boolean;
+    isLoading: boolean;
+    error: Error | null;
+  }
+  
+  // ❌ DON'T: Ignore initialization state
+  // Assuming features are immediately available without checks
+  ```
+
+- **Design for Testability**
+  - Create test utilities for common test scenarios
+  - Avoid side effects that make testing difficult
+  - Provide mock implementations for complex features
+  ```typescript
+  // ✅ DO: Design for testability
+  export const createTestStore = <T>(initialState: T) => {
+    // Implementation that simplifies testing
+  };
+  
+  // ❌ DON'T: Rely on global state or singletons
+  // Using global variables that complicate testing
+  ```
+
+- **Implement Comprehensive Error Handling**
+  - Create specialized error classes
+  - Log errors with contextual information
+  - Provide recovery mechanisms for common failures
+  ```typescript
+  // ✅ DO: Use specialized errors
+  export class PersistenceError extends Error {
+    constructor(message: string, public readonly cause?: Error) {
+      super(`Persistence error: ${message}`);
+      this.name = 'PersistenceError';
+    }
+  }
+  
+  // ❌ DON'T: Use generic errors without context
+  throw new Error('Failed'); // No context about what failed or why
+  ```
+
+- **Create Developer Experience Tooling**
+  - Implement debugging utilities
+  - Add performance monitoring
+  - Provide detailed logs in development mode
+  ```typescript
+  // ✅ DO: Enhance developer experience
+  if (process.env.NODE_ENV !== 'production') {
+    Logger.log(`Store created with features: ${Object.keys(options.features).join(', ')}`);
+  }
+  
+  // ❌ DON'T: Ignore developer experience
+  // No logging, monitoring, or debugging capabilities
+  ```

@@ -1,0 +1,118 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+- **Use Precise Generic Typing**
+  - Always define explicit constraints on generic types
+  - Provide default type parameters when appropriate
+  - Use tuple types for actions with fixed parameters
+  ```typescript
+  // ✅ DO: Use constrained generics
+  function createStore<T extends Record<string, any>>(initialState: T) {
+    // Implementation
+  }
+  
+  // ❌ DON'T: Use unconstrained generics
+  function createStore<T>(initialState: T) {
+    // Implementation
+  }
+  ```
+
+- **Implement Builder Patterns for Configurability**
+  - Use method chaining for configuration options
+  - Return `this` from configuration methods
+  - Provide type-safe parameter validation
+  ```typescript
+  // ✅ DO: Use builder pattern with type safety
+  class StoreBuilder<T extends Record<string, any>> {
+    private options: StoreOptions = {};
+    
+    withDevTools(enabled: boolean): this {
+      this.options.devTools = enabled;
+      return this;
+    }
+    
+    build(): Store<T> {
+      // Implementation
+    }
+  }
+  
+  // ❌ DON'T: Use configuration objects without validation
+  function createStore(config: any) {
+    // Implementation
+  }
+  ```
+
+- **Document Type Interfaces with JSDoc**
+  - Add detailed JSDoc comments for public APIs
+  - Include examples in complex type descriptions
+  - Document generic type parameters purpose
+  ```typescript
+  /**
+   * Creates a feature store with sliced state
+   * @template TState The state shape
+   * @template TFeatures The feature definitions
+   * @param initialState Initial state object
+   * @param options Configuration options
+   * @returns A store instance with feature methods
+   * @example
+   * const store = createFeatureStore({ count: 0 }, { 
+   *   features: {
+   *     counter: {
+   *       increment: (state) => ({ count: state.count + 1 })
+   *     }
+   *   }
+   * });
+   */
+  ```
+
+- **Create Specialized Type Utilities**
+  - Export reusable type utilities
+  - Use mapped and conditional types for flexibility
+  - Provide type guards for runtime type checking
+  ```typescript
+  // ✅ DO: Create specialized type utilities
+  export type Selector<TState, TResult> = (state: TState) => TResult;
+  
+  export function isPromise<T>(value: any): value is Promise<T> {
+    return value && typeof value.then === 'function';
+  }
+  
+  // ❌ DON'T: Use any or unknown without refinement
+  function handleValue(value: any) {
+    // Implementation
+  }
+  ```
+
+- **Handle Middleware Type Safety**
+  - Type middleware functions precisely
+  - Create specialized middleware interfaces
+  - Use function composition with proper type flow
+  ```typescript
+  // ✅ DO: Define specific middleware types
+  type Middleware<TState> = (
+    nextFn: (state: TState) => TState
+  ) => (state: TState) => TState;
+  
+  // Apply middleware with type safety
+  const applyMiddleware = <TState>(
+    store: Store<TState>,
+    middlewares: Middleware<TState>[]
+  ) => {
+    // Implementation that preserves types
+  };
+  ```
+
+- **Ensure Module Export Type Safety**
+  - Export types alongside implementation
+  - Use barrel exports for organization
+  - Avoid default exports for better tree-shaking
+  ```typescript
+  // ✅ DO: Named exports with types
+  export { createFeatureStore } from './core/createFeatureStore';
+  export type { FeatureStore, StoreOptions } from './core/types';
+  
+  // ❌ DON'T: Export implementation without types
+  export default createStore;
+  ```

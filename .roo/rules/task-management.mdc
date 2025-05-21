@@ -1,0 +1,105 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+- **Always Verify Task Structure Before Operations**
+  - Start sessions with `get_tasks` to understand the current state
+  - Check task existence and status before performing operations
+  - Use `withSubtasks: true` to see the complete task structure
+  ```typescript
+  // ✅ DO: Always check task state first
+  mcp_taskmaster-ai_get_tasks({
+    projectRoot: "/path/to/project",
+    withSubtasks: true
+  })
+  
+  // ❌ DON'T: Assume task structure from previous sessions
+  mcp_taskmaster-ai_set_task_status({
+    id: "2.5",  // May no longer exist
+    status: "in-progress"
+  })
+  ```
+
+- **Document Implementation Progress Incrementally**
+  - Record implementation details with timestamped entries
+  - Update subtask status to reflect current work state
+  - Include file paths, key decisions, and implementation details
+  ```typescript
+  // ✅ DO: Document implementation progress
+  mcp_taskmaster-ai_update_subtask({
+    id: "2.5",
+    prompt: "Created initialization tracking interface in src/core/types.ts.\nImplemented tracking of loading state with boolean flags.\nNeed to handle async initialization next."
+  })
+  
+  // ❌ DON'T: Leave implementation details undocumented
+  mcp_taskmaster-ai_set_task_status({
+    id: "2.5",
+    status: "done"
+  })
+  ```
+
+- **Break Down Complex Tasks Appropriately**
+  - Analyze task complexity before implementation
+  - Create granular subtasks for complex implementations
+  - Include clear criteria for subtask completion
+  ```typescript
+  // ✅ DO: Break down complex tasks
+  mcp_taskmaster-ai_expand_task({
+    id: "3",
+    prompt: "This feature requires multiple components: persistence strategy interface, storage adapters, and synchronization."
+  })
+  
+  // ❌ DON'T: Attempt to implement complex features without breakdown
+  // Starting work on a complex task without proper planning
+  ```
+
+- **Handle Implementation Drift Systematically**
+  - Update future tasks when implementation diverges from plans
+  - Document reasons for implementation changes
+  - Update dependencies to reflect new implementation realities
+  ```typescript
+  // ✅ DO: Update tasks when implementation changes
+  mcp_taskmaster-ai_update_task({
+    id: "4",
+    prompt: "Changed persistence strategy to use adapter pattern instead of inheritance. Future tasks need to implement adapters rather than extending base classes."
+  })
+  
+  // ❌ DON'T: Ignore drift between plans and implementation
+  // Continuing with outdated task descriptions after implementation changes
+  ```
+
+- **Maintain Clear Dependencies Between Tasks**
+  - Explicitly define task dependencies
+  - Validate dependencies after task modifications
+  - Fix circular or broken dependencies immediately
+  ```typescript
+  // ✅ DO: Maintain clear dependencies
+  mcp_taskmaster-ai_add_dependency({
+    id: "4.2",
+    dependsOn: "3.1"
+  })
+  
+  mcp_taskmaster-ai_validate_dependencies({
+    projectRoot: "/path/to/project"
+  })
+  
+  // ❌ DON'T: Create implicit dependencies
+  // Working on tasks with unsatisfied dependencies
+  ```
+
+- **Use Taskmaster Research Capabilities for Complex Features**
+  - Enable research flag for complex implementations
+  - Leverage AI research to identify best implementation approaches
+  - Document research findings in task updates
+  ```typescript
+  // ✅ DO: Use research for complex features
+  mcp_taskmaster-ai_expand_task({
+    id: "5",
+    research: true,
+    prompt: "Research best approaches for real-time synchronization of state between multiple clients."
+  })
+  
+  // ❌ DON'T: Implement complex features without research
+  // Implementing advanced features without proper research
+  ```

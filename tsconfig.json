@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "target": "ES2018",
+        "module": "ESNext",
+        "lib": [ "dom", "esnext" ],
+        "declaration": true,
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "moduleResolution": "node",
+        "jsx": "react",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "allowSyntheticDefaultImports": true,
+        "sourceMap": true,
+        "noEmit": false,
+        "baseUrl": ".",
+        "paths": {
+            "@/*": [ "src/*" ]
+        }
+    },
+    "include": [ "src/**/*" ],
+    "exclude": [ "node_modules", "dist", "tests", "examples" ]
+}
