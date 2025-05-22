@@ -3,10 +3,10 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 import {
-  StoreSlice,
-  BaseState,
-  SliceControllers,
-  CreateSliceOptions,
+  type StoreSlice,
+  type BaseState,
+  type SliceControllers,
+  type CreateSliceOptions,
 } from './StoreUitls'
 
 // Re-export core types from StoreUitls for easier access
@@ -85,15 +85,6 @@ export const createAppStore = (config: AppStoreConfig) => {
           slices.forEach((sliceConfig) => {
             const slice = sliceConfig.create(set, get, api)
             sliceMap[slice.name] = slice
-
-            if (
-              sliceConfig.options.persist.blacklist &&
-              sliceConfig.options.persist.whitelist
-            ) {
-              console.error(
-                '--ZustandSlices-- Cannot have both blacklist and whitelist in slice options'
-              )
-            }
           })
 
           // Placeholder for dependency-based initialization
@@ -101,7 +92,7 @@ export const createAppStore = (config: AppStoreConfig) => {
             const state = get()
             if (state.initialized || state.isInitializing) return
 
-            set((state) => ({
+            set((state: AppState) => ({
               ...state,
               isInitializing: true,
               initObject,
@@ -181,7 +172,7 @@ export const createAppStore = (config: AppStoreConfig) => {
                 } else if (sliceConfig.options.persist.blacklist) {
                   stateKeys.forEach((key) => {
                     if (
-                      !sliceConfig.options.persist.blacklist.includes(
+                      !sliceConfig?.options?.persist?.blacklist?.includes(
                         key as any
                       )
                     ) {

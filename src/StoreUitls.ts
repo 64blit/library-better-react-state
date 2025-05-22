@@ -1,18 +1,6 @@
 // @refresh reset
 // ======= COMMON TYPES =======
 
-import { ApiStatus } from '@controllers/sdk/types'
-
-// Session type used across the application
-export type Session = {
-  accessToken?: string
-  expires?: string | Date
-  accounts?: string[]
-  owned_accounts?: string[]
-}
-
-// For backward compatibility
-export type ReportSession = Session
 
 // ======= STORE SLICE ARCHITECTURE =======
 
