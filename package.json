@@ -1,0 +1,29 @@
+{
+  "name": "library-do-you-under-zustand",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/64blit/library-better-react-state#readme",
+  "bugs": {
+    "url": "https://github.com/64blit/library-better-react-state/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/64blit/library-better-react-state.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "zustand": "^5.0.5"
+  },
+  "devDependencies": {
+    "vite": "^6.3.5"
+  }
+}
