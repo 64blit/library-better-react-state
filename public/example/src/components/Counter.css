@@ -1,0 +1,30 @@
+.counter-container {
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.counter-display {
+  font-size: 2rem;
+  margin: 1rem 0;
+}
+
+.counter-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.counter-actions button {
+  background-color: #646cff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  color: white;
+  font-weight: bold;
+}
+
+.counter-actions button:disabled {
+  opacity: 0.5;
+}
