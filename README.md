@@ -6,6 +6,7 @@ A modern, type-safe state management library for React applications that combine
 
 **Better React State** is designed for React applications that need:
 - **Scalable state management** beyond useState/useReducer
+- **Async initialization** with initialization order and async setup functions, ensures that stores are initialized in the correct order and time
 - **Object-oriented business logic** organized in controller classes
 - **Type-safe development** with full IDE navigation support
 - **Modular architecture** with slice-based organization
@@ -93,6 +94,14 @@ const counterSlice = createSlice({
 ```typescript
 // Controller classes with business logic
 export class CounterController {
+  constructor(
+    private getState: () => CounterState,
+    private setState: (state: Partial<CounterState>) => void
+  ) {
+    this.getState = getState
+    this.setState = setState
+  }
+  
   increment = (): void => {
     const currentState = this.getState()
     this.setState({ count: currentState.count + 1 })
@@ -130,17 +139,18 @@ import type { CounterState } from './CounterStore'
  * Constructor injection pattern provides type-safe state access
  */
 export class CounterController {
+  private readonly getState: () => CounterState
+  private readonly setState: (state: Partial<CounterState>) => void
+
   constructor(
-    private getState: () => CounterState,
-    private setState: (state: Partial<CounterState>) => void
+    getState: () => CounterState,
+    setState: (state: Partial<CounterState>) => void
   ) {
-    // Validate constructor dependencies
-    if (typeof getState !== 'function') {
+    if (!getState || typeof getState !== 'function') {
       throw new Error('CounterController: getState must be a function')
     }
-    if (typeof setState !== 'function') {
-      throw new Error('CounterController: setState must be a function')
-    }
+    this.getState = getState
+    this.setState = setState
   }
 
   /**
@@ -234,21 +244,22 @@ const initialCounterState: CounterState = {
  * The setup function receives state management functions and returns controllers
  */
 export const createCounterSlice = createStoreSlice<CounterState, CounterControllers>(
-  initialCounterState,
-  'counter',
-  async (_update, _get, getState, setState) => {
+  initialCounterState, // initial state
+  'counter', // slice name
+  async (_update, _get, getState, setState) => { // controllers setup function
     // Initialize controller with injected state management functions
     const counterController = new CounterController(getState, setState)
     
     // Return all controllers for this slice
     return { counterController }
   },
-  {
+  { // slice options
     // Optional: Define persistence behavior
     persist: {
       whitelist: ['count', 'maxValue'] // Only persist these fields
       // blacklist: ['loadingCountDown'] // Alternative: exclude specific fields
-    }
+    },
+    // dependencies: ['taskList'] // optional: dependencies for this slice
   }
 )
 
@@ -293,7 +304,8 @@ const taskListSliceConfig: SliceConfig<TaskListState, TaskListControllers> = {
   name: 'taskList', 
   create: createTaskListSlice,
   options: {
-    persist: { whitelist: ['tasks'] }
+    persist: { whitelist: ['tasks'] },
+    dependencies: ['counter'] // optional: dependencies for this slice
   }
 }
 

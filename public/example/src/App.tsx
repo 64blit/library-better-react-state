@@ -2,7 +2,7 @@
 import { useAppStore } from './store/AppStore'
 import Counter from './components/Counter'
 import TaskList from './components/TaskList'
-import TypeNavigationDemo from './demo/TypeNavigationDemo'
+import TypeNavigationDemo from './components/demo/TypeNavigationDemo'
 import './App.css'
 
 function LoadingSpinner({count}:{count:number}) {

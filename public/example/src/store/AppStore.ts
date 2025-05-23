@@ -28,8 +28,9 @@ const taskListSliceConfig: SliceConfig<TaskListState, TaskListControllers> = {
   name: 'taskList', 
   create: createTaskListSlice,
   options: {
-    persist: { whitelist: ['tasks'] }
-  }
+    persist: { whitelist: ['tasks'] },
+    dependencies: ['counter']
+  },
 }
 
 const appSlices: SliceConfig<any, any>[] = [

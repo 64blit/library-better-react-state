@@ -1,4 +1,4 @@
-import { useCounter, useTaskList } from '../hooks/useStore'
+import { useCounter, useTaskList } from '../../hooks/useStore'
 
 /**
  * TypeScript Navigation Demo
