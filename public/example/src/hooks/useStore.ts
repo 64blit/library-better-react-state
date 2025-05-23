@@ -10,6 +10,12 @@ type CounterHookType = {
   setState: (state: Partial<CounterState>) => void
 }
 
+/**
+ * Hook for accessing counter state and controllers
+ * 
+ * All controller methods are fully typed and can be navigated to with Ctrl/Cmd+click
+ * Example: controllers.counterController.increment() <- Click to navigate!
+ */
 export const useCounter = (): CounterHookType => {
   const store = useAppStore()
 
@@ -34,16 +40,28 @@ type TaskListHookType = {
   setState: (state: Partial<TaskListState>) => void
 }
 
+/**
+ * Hook for accessing task list state and controllers
+ * 
+ * All controller methods are fully typed and can be navigated to with Ctrl/Cmd+click
+ * Example: controllers.taskController.addTask() <- Click to navigate!
+ */
 export const useTaskList = (): TaskListHookType => {
   const store = useAppStore()
 
   useEffect(() => {
     if (!store.initialized) {
       store.setup().then(() => {
+        console.log('🍭Store setup completed!')
+        console.log('🍭Counter controllers:', store.counter.controllers)
+        console.log('🍭TaskList controllers:', store.taskList.controllers)
+        
+        // Now we can call controllers safely with full type safety
+        // Ctrl/Cmd+click on loadTasks to navigate to the method definition!
         store.taskList.controllers.taskController.loadTasks()
       })
     }
-  }, [store])
+  }, [store.initialized])
 
   return {
     state: store.taskList.state,

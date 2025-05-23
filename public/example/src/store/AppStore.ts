@@ -16,6 +16,8 @@ import {
   TaskListControllers
 } from './TaskListStore'
 
+import type { TypedAppStore } from './types'
+
 const appSlices: SliceConfig<any, any>[] = [
   {
     name: 'counter',
@@ -37,11 +39,15 @@ const onSave = async (state: AppState) => {
   console.log('State saved:', state)
 }
 
-export const useAppStore = createAppStore({
+// Create the store with proper typing
+const store = createAppStore({
   name: 'better-react-state-example',
   slices: appSlices,
   onSave
 })
+
+// Export with type casting for better IntelliSense
+export const useAppStore = store as unknown as () => TypedAppStore
 
 export type { CounterState, CounterControllers }
 export type { TaskListState, TaskListControllers }

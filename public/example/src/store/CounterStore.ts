@@ -3,6 +3,8 @@ import {
   createStoreSlice
 } from 'better-react-state'
 
+import { CounterController } from './CounterController'
+
 export interface CounterState extends BaseState {
   count: number
   isLoading: boolean
@@ -13,12 +15,7 @@ export interface CounterState extends BaseState {
 }
 
 export interface CounterControllers {
-  counterController: {
-    increment: () => void
-    decrement: () => void
-    reset: () => void
-    setCount: (count: number) => void
-  }
+  counterController: CounterController
 }
 
 export const initialCounterState: CounterState = {
@@ -37,36 +34,8 @@ export const createCounterSlice = createStoreSlice<
   initialCounterState,
   'counter',
   async (_update, _get, getState, setState) => {
-    const counterController = {
-      increment: () => {
-        const currentState = getState()
-        
-        setState({
-          count: currentState.count + 1
-        })
-      },
-      
-      decrement: () => {
-        const currentState = getState()
-        if (currentState.count > 0) {
-          setState({
-            count: currentState.count - 1
-          })
-        }
-      },
-      
-      reset: () => {
-        setState({
-          count: 0
-        })
-      },
-      
-      setCount: (count: number) => {
-        setState({
-          count
-        })
-      }
-    }
+    // Create the controller instance with proper dependency injection
+    const counterController = new CounterController(getState, setState)
 
     return {
       counterController
