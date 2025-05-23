@@ -151,4 +151,4 @@ src/
 - [Main Library README](../../README.md)
 - [Counter Controller](src/store/CounterController.ts)
 - [TaskList Controller](src/store/TaskListController.ts)
-- [Type Navigation Demo](src/demo/TypeNavigationDemo.tsx)
+- [Type Navigation Demo](src/components/demo/TypeNavigationDemo.tsx)
