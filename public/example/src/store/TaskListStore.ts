@@ -1,8 +1,7 @@
 import { 
   BaseState, 
-  createStoreSlice, 
-  SliceControllers 
-} from '../../../../dist/do-you-zunderstand.es.js'
+  createStoreSlice
+} from 'better-react-state'
 
 export interface Task {
   id: string
@@ -40,7 +39,7 @@ export const createTaskListSlice = createStoreSlice<
 >(
   initialTaskListState,
   'taskList',
-  async (update, get, getState, setState) => {
+  async (_update, _get, getState, setState) => {
     const taskController = {
       addTask: (task: Task) => {
         const currentState = getState()

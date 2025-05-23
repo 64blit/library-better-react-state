@@ -2,7 +2,7 @@ import {
   createAppStore,
   SliceConfig,
   AppState
-} from 'do-you-zunderustand'
+} from 'better-react-state'
 
 import {
   createCounterSlice,
@@ -19,14 +19,14 @@ import {
 const appSlices: SliceConfig<any, any>[] = [
   {
     name: 'counter',
-    create: (set:any, get:any, api:any) => createCounterSlice(set, get, api),
+    create: createCounterSlice,
     options: {
       persist: { whitelist: ['count'] }
     }
   },
   {
     name: 'taskList',
-    create: (set:any, get:any, api:any) => createTaskListSlice(set, get, api),
+    create: createTaskListSlice,
     options: {
       persist: { whitelist: ['tasks'] }
     }

@@ -26,14 +26,14 @@ export type { BaseState, SliceControllers, CreateSliceOptions, StoreSlice }
 // export type ReportSession = Session // Keep for backward compatibility if needed
 
 // Configuration for the App Store
-interface AppStoreConfig {
+export interface AppStoreConfig {
   name: string // Name for persistence
   slices: SliceConfig<any, any>[] // Array of slice configurations
   onSave?: (state: any) => Promise<void> // Optional callback for server-side saving
 }
 
 // Interface for slice configuration passed to createAppStore
-interface SliceConfig<T extends BaseState, C = SliceControllers> {
+export interface SliceConfig<T extends BaseState, C = SliceControllers> {
   name: string
   create: (
     set: any,
@@ -47,7 +47,7 @@ interface SliceConfig<T extends BaseState, C = SliceControllers> {
 // ======= APP STORE ARCHITECTURE =======
 
 // Root app state combines all slice states
-interface AppRootState {
+export interface AppRootState {
   initObject?: any
   initialized: boolean
   version: number
@@ -57,7 +57,7 @@ interface AppRootState {
 
 // App state will dynamically include slice states
 // Using intersection type to combine AppRootState, dynamic slices, and the setup function
-type AppState = AppRootState & {
+export type AppState = AppRootState & {
   [key: string]: StoreSlice<any, any> // Dynamically added slices
 } & {
   setup: (initObject?: any) => Promise<void>
@@ -239,10 +239,6 @@ const createAppStore = (config: AppStoreConfig) => {
 // Remove the direct creation of the app store instance here
 // The app will create the store instance by calling createAppStore with its specific slices and config.
 export {
-  type AppStoreConfig,
-  type SliceConfig,
-  type AppRootState,
-  type AppState,
   createAppStore,
   createStoreSlice
 }

@@ -1,7 +1,7 @@
 import { 
   BaseState, 
   createStoreSlice
-} from 'do-you-zunderstand'
+} from 'better-react-state'
 
 export interface CounterState extends BaseState {
   count: number
@@ -36,7 +36,7 @@ export const createCounterSlice = createStoreSlice<
 >(
   initialCounterState,
   'counter',
-  async (update, get, getState, setState) => {
+  async (_update, _get, getState, setState) => {
     const counterController = {
       increment: () => {
         const currentState = getState()

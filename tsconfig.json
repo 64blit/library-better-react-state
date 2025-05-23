@@ -5,29 +5,39 @@
     "module": "ESNext",
     "lib": [ "ES2020", "DOM", "DOM.Iterable" ],
     "skipLibCheck": true,
+    /* Bundler mode */
+    "allowImportingTsExtensions": false,
+    "verbatimModuleSyntax": false,
+    "moduleDetection": "force",
+    "noEmit": false,
+    "sourceMap": true,
+
+    /* Linting */
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitReturns": false,
+    "noFallthroughCasesInSwitch": false,
+    "noUncheckedSideEffectImports": false,
     "paths": {
       "@controllers/*": [ "./public/controllers/*" ],
       "@store/*": [ "./public/store/*" ],
       "@src/*": [ "./src/*" ]
     },
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "moduleDetection": "force",
-    "noEmit": true,
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "outDir": "./dist",
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+
+    "moduleResolution": "node", // Ensure correct resolution for file: URLs
+    "esModuleInterop": true, // Allow default imports from ES modules
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": [ "./node_modules/@types" ], // Standard type locations
+    "outDir": "./dist", // Output directory for compiled files
+    "declaration": true, // Generate .d.ts files for types
+    "declarationMap": true, // Generate .d.ts.map files
+    "strict": true, // Enable all strict type-checking options
+    "resolveJsonModule": true, // Allow importing .json files
+    "experimentalDecorators": true, // Required for decorators
+    "importHelpers": true, // Reduce bundle size by reusing Babel helpers
+    "isolatedModules": true
   },
-  "include": [ "src", "public/store" ],
-  "exclude": [ "node_modules", "dist", "**/*.test.ts", "**/*.spec.ts" ]
+  "include": [ "src/**/*" ], // Include your source files
+  "exclude": [ "node_modules", "dist", "**/*.test.ts", "**/*.spec.ts", "public" ]
 }
