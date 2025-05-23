@@ -167,7 +167,7 @@ export class CounterController {
       }
       
       this.setState({ count: newCount })
-        } catch (error) {
+    } catch (error) {
       console.error('CounterController.increment failed:', error)
       this.setState({ error: error.message })
     }
@@ -419,7 +419,7 @@ function LoadingSpinner({ count }: { count: number }) {
 
 function App() {
   const store = useAppStore()
-
+  
   console.log('🍻App.tsx:25/(store):', store)
   
   // Initialize store if not already initialized (user's pattern)
