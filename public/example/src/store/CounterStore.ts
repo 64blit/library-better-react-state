@@ -1,5 +1,5 @@
-import { 
-  BaseState, 
+import {
+  BaseState,
   createStoreSlice
 } from 'better-react-state'
 
@@ -21,7 +21,7 @@ export interface CounterControllers {
 
 export const initialCounterState: CounterState = {
   count: 0,
-  loadingCountDown: 1,
+  loadingCountDown: 5,
   isLoading: false,
   status: {},
   error: null,

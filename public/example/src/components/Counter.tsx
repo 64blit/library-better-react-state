@@ -15,8 +15,7 @@ function Counter({ state, controllers }: CounterProps) {
   return (
     <div className="counter-container">
       <h2>Counter Example</h2>
-      <p>Demonstrates simple state with typed controller classes</p>
-      <p><small>Ctrl/Cmd+click on controller methods to navigate to their definitions!</small></p>
+
       
       <div className="counter-display">
         <span>Count: {count}</span>
@@ -26,42 +25,42 @@ function Counter({ state, controllers }: CounterProps) {
         <button 
           onClick={() => counterController.increment()}
           disabled={isLoading}
-          title="Ctrl/Cmd+click to navigate to increment method"
+          title="increment"
         >
           Increment
         </button>
         <button 
           onClick={() => counterController.decrement()}
           disabled={isLoading || count <= 0}
-          title="Ctrl/Cmd+click to navigate to decrement method"
+          title="decrement"
         >
           Decrement
         </button>
         <button 
           onClick={() => counterController.reset()}
           disabled={isLoading}
-          title="Ctrl/Cmd+click to navigate to reset method"
+          title="reset"
         >
           Reset
         </button>
         <button 
           onClick={() => counterController.incrementBy(5)}
           disabled={isLoading}
-          title="Ctrl/Cmd+click to navigate to incrementBy method"
+          title="incrementBy"
         >
           +5
         </button>
         <button 
           onClick={() => counterController.decrementBy(3)}
           disabled={isLoading}
-          title="Ctrl/Cmd+click to navigate to decrementBy method"
+          title="decrementBy"
         >
           -3
         </button>
         <button 
           onClick={() => counterController.setCount(100)}
           disabled={isLoading}
-          title="Ctrl/Cmd+click to navigate to setCount method"
+          title="setCount"
         >
           Set to 100
         </button>

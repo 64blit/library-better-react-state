@@ -34,7 +34,6 @@ function TaskList({ state, controllers }: TaskListProps) {
     <div className="task-list-container">
       <h2>Task List Example</h2>
       <p>Demonstrates complex state with typed controller classes and persistence</p>
-      <p><small>Ctrl/Cmd+click on controller methods to navigate to their definitions!</small></p>
       
       <div className="task-stats">
         <span>Total: {tasks.length}</span>
@@ -54,7 +53,7 @@ function TaskList({ state, controllers }: TaskListProps) {
         <button 
           onClick={handleAddTask} 
           disabled={isLoading || !newTaskText.trim()}
-          title="Ctrl/Cmd+click to see addTaskWithText method"
+          title="addTaskWithText"
         >
           Add Task
         </button>
@@ -64,28 +63,28 @@ function TaskList({ state, controllers }: TaskListProps) {
         <button 
           onClick={() => taskController.markAllCompleted()}
           disabled={isLoading || tasks.length === 0}
-          title="Ctrl/Cmd+click to navigate to markAllCompleted method"
+          title="markAllCompleted"
         >
           Complete All
         </button>
         <button 
           onClick={() => taskController.markAllIncomplete()}
           disabled={isLoading || tasks.length === 0}
-          title="Ctrl/Cmd+click to navigate to markAllIncomplete method"
+          title="markAllIncomplete"
         >
           Uncomplete All
         </button>
         <button 
           onClick={() => taskController.clearCompleted()}
           disabled={isLoading || completedCount === 0}
-          title="Ctrl/Cmd+click to navigate to clearCompleted method"
+          title="clearCompleted"
         >
           Clear Completed
         </button>
         <button 
           onClick={() => taskController.clearAllTasks()}
           disabled={isLoading || tasks.length === 0}
-          title="Ctrl/Cmd+click to navigate to clearAllTasks method"
+          title="clearAllTasks"
         >
           Clear All
         </button>
@@ -102,13 +101,13 @@ function TaskList({ state, controllers }: TaskListProps) {
                   type="checkbox"
                   checked={task.completed}
                   onChange={() => taskController.toggleTask(task.id)}
-                  title="Ctrl/Cmd+click to navigate to toggleTask method"
+                  title="toggleTask"
                 />
                 <span>{task.text}</span>
               </label>
               <button 
                 onClick={() => taskController.removeTask(task.id)}
-                title="Ctrl/Cmd+click to navigate to removeTask method"
+                title="removeTask"
               >
                 Delete
               </button>
