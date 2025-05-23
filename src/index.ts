@@ -3,7 +3,11 @@ export {
   type BaseState,
   type SliceControllers,
   createAppStore,
-  createStoreSlice
+  createStoreSlice,
+  type AppStoreConfig, 
+  type SliceConfig, 
+  type AppRootState, 
+  type AppState
 } from './AppStore'
 
 export {
@@ -12,5 +16,23 @@ export {
     type CreateSliceOptions
 } from './StoreUitls'
 
-// Re-export additional types that were available in the original index.d.ts
-export type { AppStoreConfig, SliceConfig, AppRootState, AppState } from './AppStore' 
+// Import required types for utility functions
+import type { 
+  StoreSlice, 
+  AppState, 
+  AppStoreConfig, 
+  SliceConfig, 
+  BaseState, 
+  SliceControllers 
+} from './AppStore'
+
+// Utility functions for better developer experience
+export function defineSliceConfig<TState extends BaseState, TControllers = SliceControllers>(
+  config: SliceConfig<TState, TControllers>
+): SliceConfig<TState, TControllers> {
+  return config
+}
+
+export function defineStoreConfig(config: AppStoreConfig): AppStoreConfig {
+  return config
+} 

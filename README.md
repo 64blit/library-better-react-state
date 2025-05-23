@@ -1,194 +1,174 @@
 # Better React State
 
-A modern, type-safe state management library for React applications built on top of Zustand with a powerful slice architecture.
+A modern, type-safe state management library for React built on Zustand with controller classes and slice architecture.
 
 ## Features
 
-- 🏗️ **Slice Architecture**: Organize your state into modular, maintainable slices
-- 🔄 **Dependency Management**: Define dependencies between slices for ordered initialization
-- 💾 **Selective Persistence**: Fine-grained control over what state gets persisted
-- 🔧 **Controller Pattern**: Separate business logic from state management
-- 📱 **DevTools Support**: Built-in Redux DevTools integration
-- 🛡️ **Type Safe**: Full TypeScript support with type inference
-- ⚡ **Performance**: Minimal re-renders with Zustand's optimized subscriptions
+- 🏗️ **Controller Classes**: Organize logic in type-safe, navigable classes
+- 🔄 **Slice Architecture**: Modular state management with clear separation
+- 💾 **Smart Persistence**: Fine-grained control over what gets persisted
+- 🛡️ **Type Safe**: Full TypeScript support with Ctrl/Cmd+click navigation
+- ⚡ **Performance**: Minimal re-renders with Zustand optimizations
 
 ## Installation
 
 ```bash
 npm install better-react-state zustand
-# or
-yarn add better-react-state zustand
-# or
-pnpm add better-react-state zustand
 ```
 
 ## Quick Start
 
-### 1. Create a Slice
+### 1. Create a Controller Class
+
+```typescript
+import type { CounterState } from './CounterStore'
+
+export class CounterController {
+  constructor(
+    private getState: () => CounterState,
+    private setState: (state: Partial<CounterState>) => void
+  ) {}
+
+  increment = (): void => {
+    const state = this.getState()
+    this.setState({ count: state.count + 1 })
+  }
+
+  decrement = (): void => {
+    const state = this.getState()
+    this.setState({ count: Math.max(0, state.count - 1) })
+  }
+
+  reset = (): void => {
+    this.setState({ count: 0 })
+  }
+}
+```
+
+### 2. Create a Store Slice
 
 ```typescript
 import { createStoreSlice, BaseState } from 'better-react-state'
+import { CounterController } from './CounterController'
 
-// Define your slice state
-interface UserState extends BaseState {
-  user: User | null
-  isLoading: boolean
+interface CounterState extends BaseState {
+  count: number
 }
 
-const initialUserState: UserState = {
-  user: null,
-  isLoading: false,
-  status: {},
-  error: null,
-  initialized: false,
-  version: 0
+interface CounterControllers {
+  counterController: CounterController
 }
 
-// Define your controllers
-interface UserControllers {
-  login: (email: string, password: string) => Promise<void>
-  logout: () => void
-  updateProfile: (data: Partial<User>) => Promise<void>
-}
-
-// Create the slice
-export const userSlice = createStoreSlice<UserState, UserControllers>(
-  initialUserState,
-  'user',
-  async (update, get, getState, setState, initObject) => {
-    // Initialize controllers with access to state management functions
-    return {
-      login: async (email: string, password: string) => {
-        setState({ isLoading: true })
-        try {
-          const user = await authService.login(email, password)
-          setState({ user, isLoading: false })
-        } catch (error) {
-          setState({ isLoading: false, error })
-        }
-      },
-      logout: () => {
-        setState({ user: null })
-      },
-      updateProfile: async (data: Partial<User>) => {
-        // Implementation here
-      }
-    }
-  },
-  {
-    persist: {
-      whitelist: ['user'] // Only persist the user object
-    }
+export const createCounterSlice = createStoreSlice<CounterState, CounterControllers>(
+  { count: 0, status: {}, error: null, initialized: false, version: 0 },
+  'counter',
+  async (_update, _get, getState, setState) => {
+    const counterController = new CounterController(getState, setState)
+    return { counterController }
   }
 )
 ```
 
-### 2. Create the App Store
+### 3. Create the App Store
 
 ```typescript
 import { createAppStore } from 'better-react-state'
-import { userSlice } from './slices/userSlice'
-import { settingsSlice } from './slices/settingsSlice'
+import { createCounterSlice } from './CounterStore'
 
 export const useAppStore = createAppStore({
-  name: 'my-app-store',
+  name: 'my-app',
   slices: [
     {
-      name: 'user',
-      create: userSlice,
-      options: {
-        persist: {
-          whitelist: ['user']
-        }
-      }
-    },
-    {
-      name: 'settings',
-      create: settingsSlice,
-      options: {
-        dependencies: ['user'], // Initialize after user slice
-        persist: {
-          blacklist: ['temporaryData']
-        }
-      }
+      name: 'counter',
+      create: createCounterSlice,
+      options: { persist: { whitelist: ['count'] } }
     }
-  ],
-  onSave: async (state) => {
-    // Optional: Save state to server
-    await api.saveUserPreferences(state)
-  }
+  ]
 })
 ```
 
-### 3. Initialize and Use in React
+### 4. Use in React
 
 ```typescript
 import { useEffect } from 'react'
-import { useAppStore } from './store'
 
-function App() {
-  const setup = useAppStore(state => state.setup)
-  const initialized = useAppStore(state => state.initialized)
-  const user = useAppStore(state => state.user?.state.user)
-  const userControllers = useAppStore(state => state.user?.controllers)
-
+function Counter() {
+  const store = useAppStore()
+  
   useEffect(() => {
-    // Initialize the store with any required data
-    setup({ apiToken: 'your-token', userId: '123' })
-  }, [setup])
+    if (!store.initialized) {
+      store.setup()
+    }
+  }, [store])
 
-  if (!initialized) {
-    return <div>Loading...</div>
-  }
+  const { count } = store.counter.state
+  const { counterController } = store.counter.controllers
 
   return (
     <div>
-      <h1>Welcome {user?.name}</h1>
-      <button onClick={() => userControllers?.logout()}>
-        Logout
-      </button>
+      <h1>Count: {count}</h1>
+      <button onClick={() => counterController.increment()}>+</button>
+      <button onClick={() => counterController.decrement()}>-</button>
+      <button onClick={() => counterController.reset()}>Reset</button>
     </div>
   )
 }
 ```
 
+## Key Benefits
+
+### 🎯 **Controller Navigation**
+Ctrl/Cmd+click on any controller method to navigate directly to its definition:
+
+```typescript
+// Click to navigate to the actual method implementation
+counterController.increment()  // ← Navigate to CounterController.increment()
+```
+
+### 🔒 **Type Safety**
+Full TypeScript support with IntelliSense and compile-time validation:
+
+```typescript
+// Auto-complete shows all available methods
+counterController.   // ← Shows: increment, decrement, reset, etc.
+```
+
+### 📦 **Modular Architecture**
+Clean separation of concerns:
+- **State**: Type-safe data structures
+- **Controllers**: Business logic in classes  
+- **Slices**: Encapsulated modules
+- **Store**: Centralized state management
+
 ## API Reference
 
-### `createStoreSlice<T, C>(initialState, sliceName, setupControllers, options?)`
+### `createStoreSlice<State, Controllers>(initialState, name, setup, options?)`
 
-Creates a reusable store slice.
-
-**Parameters:**
-- `initialState: T` - Initial state for the slice
-- `sliceName: string` - Unique name for the slice
-- `setupControllers: Function` - Async function that returns controllers
-- `options?: CreateSliceOptions<T>` - Optional configuration
+Creates a reusable store slice with controller classes.
 
 ### `createAppStore(config)`
 
-Creates the main application store.
+Creates the main application store that combines slices.
 
-**Parameters:**
-- `config.name: string` - Store name for persistence
-- `config.slices: SliceConfig[]` - Array of slice configurations
-- `config.onSave?: Function` - Optional callback for state persistence
+### Controller Classes
 
-### Slice Options
+Controllers are regular TypeScript classes with:
+- Private state accessors injected via constructor
+- Public methods for business logic
+- Full type safety and navigation support
 
-```typescript
-interface CreateSliceOptions<T> {
-  persist?: {
-    whitelist?: (keyof T)[]  // Only persist these keys
-    blacklist?: (keyof T)[]  // Don't persist these keys
-  }
-  dependencies?: string[]    // Slice names this slice depends on
-}
+## Example Structure
+
+```
+src/
+├── store/
+│   ├── CounterController.ts    # Business logic class
+│   ├── CounterStore.ts         # Slice definition
+│   └── AppStore.ts            # Main store
+└── components/
+    └── Counter.tsx            # React component
 ```
 
 ## License
 
 MIT
-
-## Contributing
-
-We welcome contributions! Please see our contributing guidelines for more details.
