@@ -2,7 +2,7 @@ import {
   createAppStore,
   SliceConfig,
   AppState
-} from '../../../../dist/do-you-zunderstand.es.js'
+} from 'do-you-zunderustand'
 
 import {
   createCounterSlice,
@@ -19,14 +19,14 @@ import {
 const appSlices: SliceConfig<any, any>[] = [
   {
     name: 'counter',
-    create: (set, get, api) => createCounterSlice(set, get, api),
+    create: (set:any, get:any, api:any) => createCounterSlice(set, get, api),
     options: {
       persist: { whitelist: ['count'] }
     }
   },
   {
     name: 'taskList',
-    create: (set, get, api) => createTaskListSlice(set, get, api),
+    create: (set:any, get:any, api:any) => createTaskListSlice(set, get, api),
     options: {
       persist: { whitelist: ['tasks'] }
     }

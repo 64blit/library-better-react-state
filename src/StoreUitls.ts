@@ -91,7 +91,6 @@ export const createStoreSlice = <T extends BaseState, C = SliceControllers>(
   return (
     set: (state: any) => void,
     get: () => any,
-    api: any
   ): StoreSlice<T, C> => {
     const persist = options?.persist
     const dependencies = options?.dependencies

@@ -1,12 +1,15 @@
 import { 
   BaseState, 
-  createStoreSlice, 
-  SliceControllers 
-} from '../../../../dist/do-you-zunderstand.es.js'
+  createStoreSlice
+} from 'do-you-zunderstand'
 
 export interface CounterState extends BaseState {
   count: number
   isLoading: boolean
+  status:{},
+  error:string|null,
+  initialized:boolean,
+  version:number
 }
 
 export interface CounterControllers {

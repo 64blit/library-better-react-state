@@ -5,7 +5,7 @@ import del from 'rollup-plugin-delete'
 
 module.exports = defineConfig({
 	root: './',
-	publicDir: './public/',
+	publicDir: false,
 	base: './',
 	build: {
 		lib: {
