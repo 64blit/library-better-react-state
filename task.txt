@@ -1,0 +1,15 @@
+# Tasks for Adding Example React TypeScript Website
+
+- [x] Create task.txt file to track tasks
+- [x] Build the library to generate the dist/ folder
+- [x] Create example website structure in public/example directory
+- [x] Set up React, TypeScript, and build configuration for the example
+- [x] Create example components demonstrating store slice pattern
+- [x] Implement example use cases for state management
+- [x] Add controllers demonstrating business logic handling
+- [x] Update example package.json to reference the dist/ folder
+- [x] Add README for the example explaining how to run it
+- [x] Create minimal library implementation for testing
+- [x] Test the example website locally
+- [x] Verify the example correctly uses the library
+- [ ] Clean up and prepare PR

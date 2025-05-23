@@ -1,16 +1,22 @@
 {
-  "name": "library-do-you-under-zustand",
-  "private": true,
-  "version": "0.0.0",
-    "files": [
+  "name": "better-react-state",
+  "private": false,
+  "version": "1.0.0",
+  "description": "A better state management library for React built on Zustand with slice architecture",
+  "keywords": ["react", "state-management", "zustand", "typescript"],
+  "author": "Your Name",
+  "license": "MIT",
+  "files": [
     "dist"
   ],
-  "main": "./dist/do-you-zunderstand.umd.js",
-  "module": "./dist/do-you-zunderstand.es.js",
+  "main": "./dist/better-react-state.umd.js",
+  "module": "./dist/better-react-state.es.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/do-you-zunderstand.es.js",
-      "require": "./dist/do-you-zunderstand.umd.js"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/better-react-state.es.js",
+      "require": "./dist/better-react-state.umd.js"
     }
   },
   "scripts": {
@@ -18,11 +24,17 @@
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0",
+    "zustand": "^5.0.0"
+  },
   "devDependencies": {
     "rollup-plugin-delete": "^3.0.1",
     "rollup-plugin-esbuild": "^6.2.1",
     "typescript": "~5.8.3",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "vite-plugin-dts": "^4.5.4"
   },
   "dependencies": {
     "zustand": "^5.0.5"

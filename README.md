@@ -1,319 +1,174 @@
-# Library Store Architecture Guide (v2.1)
+# Better React State
 
-## Overview
+A modern, type-safe state management library for React built on Zustand with controller classes and slice architecture.
 
-The store architecture uses a slice-based pattern built on Zustand to provide:
+## Features
 
-- Modular state management with encapsulated business logic
-- Strong typing with TypeScript
-- Persistent state across sessions
-- Controlled state updates through dedicated methods
+- 🏗️ **Controller Classes**: Organize logic in type-safe, navigable classes
+- 🔄 **Slice Architecture**: Modular state management with clear separation
+- 💾 **Smart Persistence**: Fine-grained control over what gets persisted
+- 🛡️ **Type Safe**: Full TypeScript support with Ctrl/Cmd+click navigation
+- ⚡ **Performance**: Minimal re-renders with Zustand optimizations
 
-## Core Concepts
+## Installation
 
-### Store Slices
+```bash
+npm install better-react-state zustand
+```
 
-A store slice is a self-contained module with:
+## Quick Start
 
-1. **State** - Typed data structure
-2. **Controllers** - Business logic handlers
-3. **Standard Methods** - Consistent API for state manipulation
+### 1. Create a Controller Class
 
 ```typescript
-// Example slice structure
-interface StoreSlice<T extends BaseState, C = SliceControllers> {
-  name: string // Unique identifier
-  state: T // Typed state data
-  controllers: C // Business logic handlers
-  getState: () => T // Get current state
-  setState: (state: Partial<T>) => void // Update state
-  update: () => void // Force re-render
-  setError: (error: any) => void // Set error state
-  reset: () => void // Reset to initial state
-  setup: (session: Session | null) => Promise<void> // Initialize
+import type { CounterState } from './CounterStore'
+
+export class CounterController {
+  constructor(
+    private getState: () => CounterState,
+    private setState: (state: Partial<CounterState>) => void
+  ) {}
+
+  increment = (): void => {
+    const state = this.getState()
+    this.setState({ count: state.count + 1 })
+  }
+
+  decrement = (): void => {
+    const state = this.getState()
+    this.setState({ count: Math.max(0, state.count - 1) })
+  }
+
+  reset = (): void => {
+    this.setState({ count: 0 })
+  }
 }
 ```
 
-### Application Store
-
-The root store combines all slices and provides:
-
-- Session management
-- Initialization orchestration
-- Persistence configuration
-
-## Implementation Guide
-
-### 1. Create a New Store Slice
-
-Create a file `MyFeatureStore.ts`:
+### 2. Create a Store Slice
 
 ```typescript
-import { BaseState, createStoreSlice } from './StoreUitls'
+import { createStoreSlice, BaseState } from 'better-react-state'
+import { CounterController } from './CounterController'
 
-// State interface
-export interface MyFeatureState extends BaseState {
-  items: Item[]
-  isLoading: boolean
+interface CounterState extends BaseState {
+  count: number
 }
 
-// Controllers interface
-export interface MyFeatureControllers {
-  itemController: {
-    loadItems: () => Promise<void>
-    addItem: (item: Item) => Promise<void>
-  }
+interface CounterControllers {
+  counterController: CounterController
 }
 
-// Initial state
-export const initialMyFeatureState: MyFeatureState = {
-  items: [],
-  isLoading: false,
-  status: {},
-  error: null,
-  initialized: false,
-  version: 0,
-}
-
-// Create slice using the factory function
-export const createMyFeatureSlice = createStoreSlice<
-  MyFeatureState,
-  MyFeatureControllers
->(
-  initialMyFeatureState,
-  'myFeature',
-  async (update, get, getState, setState, session) => {
-    // Initialize controllers
-    const itemController = {
-      loadItems: async () => {
-        setState({ isLoading: true })
-        try {
-          // API call or data fetch logic
-          const items = await fetchItems(session?.accessToken)
-          setState({ items, isLoading: false })
-        } catch (error) {
-          setState({ error, isLoading: false })
-        }
-      },
-
-      addItem: async (item) => {
-        // Implementation
-      },
-    }
-
-    // Return controllers
-    return {
-      itemController,
-    }
+export const createCounterSlice = createStoreSlice<CounterState, CounterControllers>(
+  { count: 0, status: {}, error: null, initialized: false, version: 0 },
+  'counter',
+  async (_update, _get, getState, setState) => {
+    const counterController = new CounterController(getState, setState)
+    return { counterController }
   }
 )
 ```
 
-### 2. Integrate Slice into AppStore
-
-Update `AppStore.ts`:
+### 3. Create the App Store
 
 ```typescript
-// Import your slice
-import { createMyFeatureSlice, MyFeatureState, MyFeatureControllers } from './MyFeatureStore';
+import { createAppStore } from 'better-react-state'
+import { createCounterSlice } from './CounterStore'
 
-// Update AppState interface
-export interface AppState extends AppRootState {
-  // Existing slices
-  report: StoreSlice<ReportState, ReportControllers>;
-  // Add your slice
-  myFeature: StoreSlice<MyFeatureState, MyFeatureControllers>;
-}
-
-// Add to createNewStores function
-const createNewStores = (set: any, get: any, api: any) => {
-  const reportSlice = createReportSlice(set, get, api);
-  // Add your slice
-  const myFeatureSlice = createMyFeatureSlice(set, get, api);
-
-  return {
-    reportSlice,
-    // Other slices
-    myFeatureSlice,
-  };
-};
-
-// Add to the setup function
-setup: async (session: Session | null) => {
-  // Setup other slices
-  if (reportSlice.setup) await reportSlice.setup(session);
-  // Add your slice setup
-  if (myFeatureSlice.setup) await myFeatureSlice.setup(session);
-};
-
-// Update persistence configuration
-partialize: ((state: any) => ({
-  // Existing slices
-  report: { state: state.report.state },
-  // Add your slice
-  myFeature: { state: state.myFeature.state },
-})),
-
-// Add to merge function
-merge: (persistedState: any, currentState: any) => {
-  // Merge existing slices
-  if (persistedState.myFeature?.state) {
-    currentState.myFeature.state = {
-      ...currentState.myFeature.state,
-      ...persistedState.myFeature.state
-    };
-  }
-
-  return {
-    ...currentState,
-    session: persistedState.session || currentState.session,
-  };
-}
+export const useAppStore = createAppStore({
+  name: 'my-app',
+  slices: [
+    {
+      name: 'counter',
+      create: createCounterSlice,
+      options: { persist: { whitelist: ['count'] } }
+    }
+  ]
+})
 ```
 
-### 3. Create a Custom Hook
-
-Update `useStore.ts`:
+### 4. Use in React
 
 ```typescript
-// Define hook type
-export type MyFeatureHookType = AppStoreHookReturn & {
-  state: MyFeatureState
-  controllers: MyFeatureControllers
-  update: () => void
-  setState: (state: Partial<MyFeatureState>) => void
-}
+import { useEffect } from 'react'
 
-// Create hook
-export const useMyFeature = (): MyFeatureHookType => {
+function Counter() {
   const store = useAppStore()
-
-  return {
-    ...store,
-    state: store.myFeature.state,
-    controllers: store.myFeature.controllers,
-    update: store.myFeature.update,
-    setState: store.myFeature.setState,
-  }
-}
-```
-
-### 4. Use in Components
-
-```tsx
-import { useMyFeature } from '../store/useStore'
-
-export default function MyComponent() {
-  const { state, controllers, setState } = useMyFeature()
-
+  
   useEffect(() => {
-    // Load data on component mount
-    controllers.itemController.loadItems()
-  }, [])
+    if (!store.initialized) {
+      store.setup()
+    }
+  }, [store])
+
+  const { count } = store.counter.state
+  const { counterController } = store.counter.controllers
 
   return (
     <div>
-      {state.isLoading ? (
-        <div>Loading...</div>
-      ) : (
-        state.items.map((item) => <div key={item.id}>{item.name}</div>)
-      )}
+      <h1>Count: {count}</h1>
+      <button onClick={() => counterController.increment()}>+</button>
+      <button onClick={() => counterController.decrement()}>-</button>
+      <button onClick={() => counterController.reset()}>Reset</button>
     </div>
   )
 }
 ```
 
-## Best Practices
+## Key Benefits
 
-### State Management
+### 🎯 **Controller Navigation**
+Ctrl/Cmd+click on any controller method to navigate directly to its definition:
 
-- Use `setState` to update state, never mutate directly
-- Keep state normalized and minimal
-- Use controllers for all business logic
-- Call `update()` after operations that may not trigger re-renders
+```typescript
+// Click to navigate to the actual method implementation
+counterController.increment()  // ← Navigate to CounterController.increment()
+```
 
-### Controllers
+### 🔒 **Type Safety**
+Full TypeScript support with IntelliSense and compile-time validation:
 
-- Design controllers around specific domains
-- Keep controller methods pure and focused
-- Handle side effects (API calls, etc.) in controllers
-- Return Promises from async methods to enable proper await chains
+```typescript
+// Auto-complete shows all available methods
+counterController.   // ← Shows: increment, decrement, reset, etc.
+```
 
-### Persistence
+### 📦 **Modular Architecture**
+Clean separation of concerns:
+- **State**: Type-safe data structures
+- **Controllers**: Business logic in classes  
+- **Slices**: Encapsulated modules
+- **Store**: Centralized state management
 
-- Only persist serializable state (no functions or complex objects)
-- Always update both `partialize` and `merge` when adding a slice
-- Clean up sensitive data before persistence
+## API Reference
 
-### Error Handling
+### `createStoreSlice<State, Controllers>(initialState, name, setup, options?)`
 
-- Use the `setError` method to handle and propagate errors
-- Include proper error recovery in controllers
-- Maintain error state per slice for granular error handling
+Creates a reusable store slice with controller classes.
 
-## Architecture Improvement Suggestions
+### `createAppStore(config)`
 
-1. **Selector Optimization**
+Creates the main application store that combines slices.
 
-   - Implement memoized selectors to prevent unnecessary re-renders
-   - Add a `createSelector` utility for derived state
-   - Use `useSelector` hook for optimized state access
+### Controller Classes
 
-2. **Middleware Pattern**
+Controllers are regular TypeScript classes with:
+- Private state accessors injected via constructor
+- Public methods for business logic
+- Full type safety and navigation support
 
-   - Add support for slice-specific middleware (logging, validation)
-   - Create a middleware API for cross-cutting concerns
-   - Use `useMiddleware` hook to apply middleware to slices
+## Example Structure
 
-3. **Command Pattern**
+```
+src/
+├── store/
+│   ├── CounterController.ts    # Business logic class
+│   ├── CounterStore.ts         # Slice definition
+│   └── AppStore.ts            # Main store
+└── components/
+    └── Counter.tsx            # React component
+```
 
-   - Implement a command queue for operations that should be atomic
-   - Add undo/redo capability with command history
-   - Use `createCommand` utility for atomic operations
+## License
 
-4. **Enhanced Type Safety**
-
-   - Add runtime type validation with Zod or similar
-   - Create stricter typing for controller methods
-   - Use `typeSafeController` decorator for validation
-
-5. **Testing Improvements**
-
-   - Add a store mock factory for testing
-   - Create test utilities for slice testing in isolation
-   - Use `mockStore` utility for unit testing
-
-6. **Async Improvements**
-
-   - Add loading state standardization
-   - Implement request cancellation for controllers
-   - Use `useLoading` hook to track loading states
-
-7. **Performance Monitoring**
-   - Add performance tracking to measure state update frequency
-   - Implement slice-specific update throttling
-   - Use `usePerformance` hook for monitoring
-
-## Common Pitfalls
-
-1. **Circular Dependencies**
-
-   - Avoid importing hooks in store files
-   - Use `import type` for type-only imports
-
-2. **Persistence Issues**
-
-   - Never return `{...currentState, ...persistedState}` in merge
-   - Only persist data, not functions or controllers
-   - Use `persistData` utility for safe persistence
-
-3. **State Update Timing**
-
-   - State updates may not reflect immediately
-   - Always use state from hook returns rather than accessing store directly
-   - Use `useEffect` for side effects that depend on state changes
-
-4. **Slice Isolation**
-   - Avoid direct cross-slice dependencies
-   - Use the AppStore's setup method to coordinate initialization
-   - Use `useStore` hook for coordinated access
+MIT

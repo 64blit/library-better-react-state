@@ -91,7 +91,6 @@ export const createStoreSlice = <T extends BaseState, C = SliceControllers>(
   return (
     set: (state: any) => void,
     get: () => any,
-    api: any
   ): StoreSlice<T, C> => {
     const persist = options?.persist
     const dependencies = options?.dependencies
@@ -135,8 +134,7 @@ export const createStoreSlice = <T extends BaseState, C = SliceControllers>(
 
     // Setup the slice with initObject data and initialize controllers
     const setup = async (initObject?: any): Promise<void> => {
-      if (!initObject) return Promise.resolve()
-
+      // Always initialize controllers, even without initObject
       controllers = await setupControllers(
         update,
         get,
