@@ -10,10 +10,10 @@ module.exports = defineConfig({
 		lib: {
 			// Single entry point for the library
 			entry: path.resolve(__dirname, './src/index.ts'),
-			name: 'BetterReactState',
+			name: 'index',
 			// Generate both ESM and UMD formats
-			formats: ['es', 'umd'],
-			fileName: (format) => `better-react-state.${format}.js`,
+			formats: ['es'],
+			fileName: (format) => `index.${format}.js`,
 		},
 		rollupOptions: {
 			// External dependencies that should not be bundled

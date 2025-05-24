@@ -4,6 +4,7 @@ import Counter from './components/Counter'
 import TaskList from './components/TaskList'
 import TypeNavigationDemo from './components/demo/TypeNavigationDemo'
 import './App.css'
+import { useStore } from './hooks/useStore'
 
 function LoadingSpinner({count}:{count:number}) {
 
@@ -22,14 +23,9 @@ function LoadingSpinner({count}:{count:number}) {
     </div>
   )
 }
-
+    
 function App() {
-  const store = useAppStore()
-
-  console.log('🍻App.tsx:25/(store):', store)
-  if(!store.initialized){
-    store.setup()
-  }
+  const store = useStore()
 
   // Show loading spinner while initializing
   if (store.isInitializing) {

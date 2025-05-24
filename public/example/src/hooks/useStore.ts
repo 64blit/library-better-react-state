@@ -1,5 +1,6 @@
+import { AppState, StoreSlice } from 'better-react-state'
 import { useAppStore } from '../store/AppStore'
-import type { CounterState, CounterControllers } from '../store/AppStore'
+import type { CounterState, CounterControllers, TypedAppStore } from '../store/AppStore'
 import type { TaskListState, TaskListControllers } from '../store/AppStore'
 
 type CounterHookType = {
@@ -7,6 +8,16 @@ type CounterHookType = {
   controllers: CounterControllers
   update: () => void
   setState: (state: Partial<CounterState>) => void
+}
+
+export const useStore = (): TypedAppStore => {
+  const store = useAppStore()
+
+  if(!store.initialized){
+    store.setup()
+  }
+
+  return store
 }
 
 /**
@@ -18,7 +29,7 @@ type CounterHookType = {
  * Note: Store initialization is handled at the App level
  */
 export const useCounter = (): CounterHookType => {
-  const store = useAppStore()
+  const store = useStore()
 
   return {
     state: store.counter.state,
@@ -44,7 +55,7 @@ type TaskListHookType = {
  * Note: Store initialization is handled at the App level
  */
 export const useTaskList = (): TaskListHookType => {
-  const store = useAppStore()
+  const store = useStore()
 
   return {
     state: store.taskList.state,
@@ -52,14 +63,4 @@ export const useTaskList = (): TaskListHookType => {
     update: store.taskList.update,
     setState: store.taskList.setState
   }
-}
-
-/**
- * Hook for accessing the main app store
- * 
- * Provides direct access to the store for advanced use cases
- * Note: Store initialization is handled at the App level
- */
-export const useStore = () => {
-  return useAppStore()
 }
