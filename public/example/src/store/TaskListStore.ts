@@ -35,9 +35,9 @@ export const createTaskListSlice = createStoreSlice<
 >(
   initialTaskListState,
   'taskList',
-  async (_update, _get, getState, setState) => {
+  async (update, getGlobalState, getSliceState, setSliceState) => {
     // Create the controller instance with proper dependency injection
-    const taskController = new TaskListController(getState, setState)
+    const taskController = new TaskListController(getSliceState, setSliceState)
 
     return {
       taskController

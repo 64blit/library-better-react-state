@@ -35,14 +35,14 @@ export const createCounterSlice = createStoreSlice<
 >(
   initialCounterState,
   'counter',
-  async (_update, _get, getState, setState) => {
+  async (update, getGlobalState, getSliceState, setSliceState) => {
     // Create the controller instance with proper dependency injection
-    const counterController = new CounterController(getState, setState)
+    const counterController = new CounterController(getSliceState, setSliceState)
 
-    while(getState().loadingCountDown > 0){
+    while(getSliceState().loadingCountDown > 0){
       await new Promise(resolve => setTimeout(resolve, 1000))
-      setState({
-        loadingCountDown: getState().loadingCountDown - 1
+      setSliceState({
+        loadingCountDown: getSliceState().loadingCountDown - 1
       })
     }
 
