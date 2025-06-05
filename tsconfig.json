@@ -29,7 +29,7 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "typeRoots": [ "./node_modules/@types" ], // Standard type locations
-    "outDir": "./dist", // Output directory for compiled files
+    "outDir": "better-react-state-library", // Output directory for compiled files
     "declaration": true, // Generate .d.ts files for types
     "declarationMap": true, // Generate .d.ts.map files
     "strict": true, // Enable all strict type-checking options
@@ -39,5 +39,5 @@
     "isolatedModules": true
   },
   "include": [ "src/**/*" ], // Include your source files
-  "exclude": [ "node_modules", "dist", "**/*.test.ts", "**/*.spec.ts", "public" ]
+  "exclude": [ "node_modules", "better-react-state-library", "**/*.test.ts", "**/*.spec.ts", "public" ]
 }

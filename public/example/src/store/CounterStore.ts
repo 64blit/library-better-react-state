@@ -1,7 +1,7 @@
 import {
   BaseState,
   createStoreSlice
-} from 'better-react-state'
+} from '../../../../better-react-state-library'
 
 import { CounterController } from './CounterController'
 

@@ -1,4 +1,4 @@
-import { AppState, StoreSlice } from 'better-react-state'
+import { AppState, StoreSlice } from '../../../../better-react-state-library'
 import { useAppStore } from '../store/AppStore'
 import type { CounterState, CounterControllers, TypedAppStore } from '../store/AppStore'
 import type { TaskListState, TaskListControllers } from '../store/AppStore'
